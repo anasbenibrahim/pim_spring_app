@@ -1,0 +1,14 @@
+spring:
+  application:
+    name=spring_app
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hopeup
+    username: postgres
+    password: postgres
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
