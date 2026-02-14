@@ -53,6 +53,14 @@ public class UserService {
     
     @Autowired
     private ObjectMapper objectMapper;
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        System.out.println("==================================================");
+        System.out.println("HARDCODED OTP MODE ACTIVE: OTP WILL ALWAYS BE 111111");
+        System.out.println("PLEASE RESTART BACKEND IF YOU DO NOT SEE THIS MESSAGE");
+        System.out.println("==================================================");
+    }
     
     @Transactional
     public AuthResponse registerPatient(RegisterPatientRequest request, MultipartFile imageFile) {
@@ -73,6 +81,7 @@ public class UserService {
         patient.setAge(request.getAge());
         patient.setRole(UserRole.PATIENT);
         patient.setDateNaissance(request.getDateNaissance());
+        // These can be null initially (completed in Onboarding)
         patient.setSobrietyDate(request.getSobrietyDate());
         patient.setAddiction(request.getAddiction());
         patient.setReferralKey(referralKey);
@@ -244,6 +253,9 @@ public class UserService {
                     .orElse(null);
             if (patient != null) {
                 response.setReferralCode(patient.getReferralKey());
+                response.setHasCompletedOnboarding(patient.isHasCompletedOnboarding());
+                response.setAddiction(patient.getAddiction() != null ? patient.getAddiction().name() : null);
+                response.setSobrietyDate(patient.getSobrietyDate());
             }
         }
         
@@ -468,15 +480,18 @@ public class UserService {
     }
     
     private String generateOtpCode() {
-        Random random = new Random();
-        return String.format("%06d", random.nextInt(1000000));
+        // Random random = new Random();
+        // return String.format("%06d", random.nextInt(1000000));
+        return "111111"; // HARDCODED FOR DEV
     }
     
     // Temporary registration methods for OTP verification
     @Transactional
     public void initiateRegistration(String email, String registrationDataJson, String userRole) {
+        System.out.println("Starting registration for: " + email + ", role: " + userRole);
         // Check if email already exists
         if (userRepository.existsByEmail(email)) {
+            System.out.println("Error: Email already exists: " + email);
             throw new RuntimeException("Email already exists");
         }
         
@@ -490,12 +505,14 @@ public class UserService {
         tempReg.setUserRole(userRole);
         tempReg.setExpiresAt(LocalDateTime.now().plusMinutes(10)); // Expires in 10 minutes
         temporaryRegistrationRepository.save(tempReg);
+        System.out.println("Temp registration saved.");
         
         // Mark all previous OTPs as used
         otpRepository.markAllAsUsedByEmail(email);
         
         // Generate 6-digit OTP
         String otpCode = generateOtpCode();
+        System.out.println("Generated OTP: " + otpCode);
         
         // Create OTP entity
         Otp otp = new Otp();
@@ -504,6 +521,7 @@ public class UserService {
         otp.setExpiresAt(LocalDateTime.now().plusMinutes(10)); // OTP expires in 10 minutes
         otp.setUsed(false);
         otpRepository.save(otp);
+        System.out.println("OTP saved to DB: " + otp.getId());
         
         // Send OTP via email
         emailService.sendOtpEmail(email, otpCode);
@@ -511,12 +529,18 @@ public class UserService {
     
     @Transactional
     public AuthResponse verifyRegistrationOtp(String email, String otpCode, String userRole, MultipartFile imageFile) {
+        System.out.println("Verifying OTP for: " + email + ", Code: " + otpCode + ", Role: " + userRole + ", Time: " + LocalDateTime.now());
         // Verify OTP
         Otp otp = otpRepository.findByEmailAndCodeAndUsedFalseAndExpiresAtAfter(
                 email, 
                 otpCode, 
                 LocalDateTime.now()
-        ).orElseThrow(() -> new RuntimeException("Invalid or expired OTP code"));
+        ).orElseThrow(() -> {
+            System.out.println("OTP NOT FOUND or EXPIRED.");
+            return new RuntimeException("Invalid or expired OTP code");
+        });
+        System.out.println("OTP Found: " + otp.getId());
+        
         
         // Get temporary registration data
         TemporaryRegistration tempReg = temporaryRegistrationRepository
