@@ -25,8 +25,18 @@ public class OnboardingController {
     public ResponseEntity<Patient> completeOnboarding(@RequestBody OnboardingCompletionRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        
+
         Patient updatedPatient = onboardingService.completeOnboarding(email, request);
+        return ResponseEntity.ok(updatedPatient);
+    }
+
+    @PostMapping("/assessment")
+    public ResponseEntity<Patient> completeAssessment(
+            @RequestBody com.example.springproject.dto.ProfileAssessmentRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Patient updatedPatient = onboardingService.completeAssessment(email, request);
         return ResponseEntity.ok(updatedPatient);
     }
 }

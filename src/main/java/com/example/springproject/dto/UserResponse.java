@@ -20,7 +20,9 @@ public class UserResponse {
     private String profileImageUrl;
     private LocalDateTime createdAt;
     private String referralCode; // Only for patients
-    private boolean hasCompletedOnboarding;
+    private Boolean hasCompletedOnboarding;
+    private int profileCompletionScore;
+    private Boolean hasCompletedAssessment;
     private String addiction;
     private java.time.LocalDate sobrietyDate;
     // Patient information for family members
