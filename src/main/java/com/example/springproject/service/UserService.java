@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -81,10 +79,30 @@ public class UserService {
         patient.setAge(request.getAge());
         patient.setRole(UserRole.PATIENT);
         patient.setDateNaissance(request.getDateNaissance());
-        // These can be null initially (completed in Onboarding)
+        // These can be null initially (but mostly filled by Gamified Onboarding)
         patient.setSobrietyDate(request.getSobrietyDate());
         patient.setAddiction(request.getAddiction());
         patient.setReferralKey(referralKey);
+
+        // Map the gamified fields
+        patient.setUsername(request.getUsername());
+        patient.setPrenamePrivate(request.isPrenamePrivate());
+        patient.setUsageDuration(request.getUsageDuration());
+        patient.setHasCompletedOnboarding(true); // Since registration IS onboarding now
+
+        // Handle arrays
+        if (request.getHobbies() != null) {
+            patient.getHobbies().addAll(request.getHobbies());
+        }
+        if (request.getTriggers() != null) {
+            patient.getTriggers().addAll(request.getTriggers());
+        }
+        if (request.getCopingMechanisms() != null) {
+            patient.getCopingMechanisms().addAll(request.getCopingMechanisms());
+        }
+        if (request.getMotivations() != null) {
+            patient.getMotivations().addAll(request.getMotivations());
+        }
 
         // Handle image upload
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -264,6 +282,10 @@ public class UserService {
                 response.setHasCompletedAssessment(patient.getHasCompletedAssessment());
                 response.setAddiction(patient.getAddiction() != null ? patient.getAddiction().name() : null);
                 response.setSobrietyDate(patient.getSobrietyDate());
+                response.setUsername(patient.getUsername());
+                response.setPrenamePrivate(patient.getPrenamePrivate());
+                response.setUsageDuration(patient.getUsageDuration());
+                response.setHobbies(patient.getHobbies());
             }
         }
 

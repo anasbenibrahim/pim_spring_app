@@ -1,6 +1,7 @@
 package com.example.springproject.controller;
 
 import com.example.springproject.dto.*;
+import com.example.springproject.model.User;
 import com.example.springproject.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
@@ -15,13 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
-    
+
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
@@ -32,7 +33,7 @@ public class AuthController {
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
-    
+
     @PostMapping("/register/patient")
     public ResponseEntity<?> registerPatient(
             @RequestParam("data") String dataJson,
@@ -46,12 +47,14 @@ public class AuthController {
             }
             // Store registration data temporarily and send OTP
             userService.initiateRegistration(request.getEmail(), dataJson, "PATIENT");
-            return ResponseEntity.ok(new MessageResponse("OTP code has been sent to your email. Please verify to complete registration."));
+            return ResponseEntity.ok(new MessageResponse(
+                    "OTP code has been sent to your email. Please verify to complete registration."));
         } catch (DataIntegrityViolationException e) {
             String message = e.getMessage();
             if (message != null && (message.contains("email") || message.contains("uk_6dotkott2kjsp8vw4d0m25fb7"))) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new ErrorResponse("Email already exists. Please use a different email or try logging in."));
+                        .body(new ErrorResponse(
+                                "Email already exists. Please use a different email or try logging in."));
             }
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("This information already exists in the system."));
@@ -63,7 +66,7 @@ public class AuthController {
                     .body(new ErrorResponse("Registration failed: " + e.getMessage()));
         }
     }
-    
+
     @PostMapping("/register/volontaire")
     public ResponseEntity<?> registerVolontaire(
             @RequestParam("data") String dataJson,
@@ -76,12 +79,14 @@ public class AuthController {
             }
             // Store registration data temporarily and send OTP
             userService.initiateRegistration(request.getEmail(), dataJson, "VOLONTAIRE");
-            return ResponseEntity.ok(new MessageResponse("OTP code has been sent to your email. Please verify to complete registration."));
+            return ResponseEntity.ok(new MessageResponse(
+                    "OTP code has been sent to your email. Please verify to complete registration."));
         } catch (DataIntegrityViolationException e) {
             String message = e.getMessage();
             if (message != null && (message.contains("email") || message.contains("uk_6dotkott2kjsp8vw4d0m25fb7"))) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new ErrorResponse("Email already exists. Please use a different email or try logging in."));
+                        .body(new ErrorResponse(
+                                "Email already exists. Please use a different email or try logging in."));
             }
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("This information already exists in the system."));
@@ -93,7 +98,7 @@ public class AuthController {
                     .body(new ErrorResponse("Registration failed: " + e.getMessage()));
         }
     }
-    
+
     @PostMapping("/register/family")
     public ResponseEntity<?> registerFamilyMember(
             @RequestParam("data") String dataJson,
@@ -106,12 +111,14 @@ public class AuthController {
             }
             // Store registration data temporarily and send OTP
             userService.initiateRegistration(request.getEmail(), dataJson, "FAMILY_MEMBER");
-            return ResponseEntity.ok(new MessageResponse("OTP code has been sent to your email. Please verify to complete registration."));
+            return ResponseEntity.ok(new MessageResponse(
+                    "OTP code has been sent to your email. Please verify to complete registration."));
         } catch (DataIntegrityViolationException e) {
             String message = e.getMessage();
             if (message != null && (message.contains("email") || message.contains("uk_6dotkott2kjsp8vw4d0m25fb7"))) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new ErrorResponse("Email already exists. Please use a different email or try logging in."));
+                        .body(new ErrorResponse(
+                                "Email already exists. Please use a different email or try logging in."));
             }
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("This information already exists in the system."));
@@ -123,7 +130,7 @@ public class AuthController {
                     .body(new ErrorResponse("Registration failed: " + e.getMessage()));
         }
     }
-    
+
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
         try {
@@ -134,7 +141,7 @@ public class AuthController {
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
         try {
@@ -148,7 +155,7 @@ public class AuthController {
                     .body(new ErrorResponse("Invalid token"));
         }
     }
-    
+
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         try {
@@ -159,7 +166,7 @@ public class AuthController {
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
-    
+
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
         try {
@@ -170,7 +177,7 @@ public class AuthController {
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
-    
+
     @PostMapping("/verify-registration-otp")
     public ResponseEntity<?> verifyRegistrationOtp(
             @RequestParam("email") String email,
@@ -188,7 +195,7 @@ public class AuthController {
                     .body(new ErrorResponse("Registration verification failed: " + e.getMessage()));
         }
     }
-    
+
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         try {
@@ -199,7 +206,7 @@ public class AuthController {
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
-    
+
     @PutMapping("/profile/patient")
     public ResponseEntity<?> updatePatientProfile(
             @RequestHeader("Authorization") String token,
@@ -219,7 +226,7 @@ public class AuthController {
                     .body(new ErrorResponse("Failed to update profile: " + e.getMessage()));
         }
     }
-    
+
     @PutMapping("/profile/volontaire")
     public ResponseEntity<?> updateVolontaireProfile(
             @RequestHeader("Authorization") String token,
@@ -239,7 +246,7 @@ public class AuthController {
                     .body(new ErrorResponse("Failed to update profile: " + e.getMessage()));
         }
     }
-    
+
     @PutMapping("/profile/family")
     public ResponseEntity<?> updateFamilyMemberProfile(
             @RequestHeader("Authorization") String token,
@@ -259,36 +266,36 @@ public class AuthController {
                     .body(new ErrorResponse("Failed to update profile: " + e.getMessage()));
         }
     }
-    
+
     // Inner class for error responses
     public static class ErrorResponse {
         private String message;
-        
+
         public ErrorResponse(String message) {
             this.message = message;
         }
-        
+
         public String getMessage() {
             return message;
         }
-        
+
         public void setMessage(String message) {
             this.message = message;
         }
     }
-    
+
     // Inner class for success messages
     public static class MessageResponse {
         private String message;
-        
+
         public MessageResponse(String message) {
             this.message = message;
         }
-        
+
         public String getMessage() {
             return message;
         }
-        
+
         public void setMessage(String message) {
             this.message = message;
         }

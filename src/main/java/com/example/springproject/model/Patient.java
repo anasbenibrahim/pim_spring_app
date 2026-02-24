@@ -55,6 +55,20 @@ public class Patient extends User {
     @Column(name = "motivation")
     private java.util.Set<String> motivations = new java.util.HashSet<>();
 
+    @Column(name = "username", unique = true)
+    private String username;
+
+    @Column(name = "prename_private")
+    private Boolean prenamePrivate = false;
+
+    @Column(name = "usage_duration")
+    private String usageDuration;
+
+    @ElementCollection
+    @CollectionTable(name = "patient_hobbies", joinColumns = @JoinColumn(name = "patient_id"))
+    @Column(name = "hobby")
+    private java.util.Set<String> hobbies = new java.util.HashSet<>();
+
     @Column(name = "has_completed_onboarding")
     private Boolean hasCompletedOnboarding = false;
 

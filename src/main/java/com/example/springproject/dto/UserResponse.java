@@ -25,6 +25,10 @@ public class UserResponse {
     private Boolean hasCompletedAssessment;
     private String addiction;
     private java.time.LocalDate sobrietyDate;
+    private String username;
+    private Boolean prenamePrivate;
+    private String usageDuration;
+    private java.util.Set<String> hobbies;
     // Patient information for family members
     private Long patientId;
     private String patientNom;

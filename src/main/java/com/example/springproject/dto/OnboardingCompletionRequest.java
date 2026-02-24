@@ -19,4 +19,8 @@ public class OnboardingCompletionRequest {
     private Set<String> triggers;
     private Set<String> copingMechanisms;
     private Set<String> motivations;
+    private String username;
+    private Boolean prenamePrivate;
+    private String usageDuration;
+    private Set<String> hobbies;
 }

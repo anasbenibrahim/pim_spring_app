@@ -76,6 +76,26 @@ public class OnboardingService {
             patient.getMotivations().addAll(request.getMotivations());
         }
 
+        if (request.getUsername() != null) {
+            patient.setUsername(request.getUsername());
+        }
+
+        if (request.getPrenamePrivate() != null) {
+            patient.setPrenamePrivate(request.getPrenamePrivate());
+        }
+
+        if (request.getUsageDuration() != null) {
+            patient.setUsageDuration(request.getUsageDuration());
+        }
+
+        if (request.getHobbies() != null) {
+            if (patient.getHobbies() == null) {
+                patient.setHobbies(new java.util.HashSet<>());
+            }
+            patient.getHobbies().clear();
+            patient.getHobbies().addAll(request.getHobbies());
+        }
+
         patient.setHasCompletedOnboarding(true);
 
         return patientRepository.save(patient);
