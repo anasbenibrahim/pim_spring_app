@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/v1/notifications/risk-alert").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/ws/social/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
