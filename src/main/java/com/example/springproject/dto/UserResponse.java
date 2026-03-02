@@ -23,6 +23,10 @@ public class UserResponse {
     private boolean hasCompletedOnboarding;
     private String addiction;
     private java.time.LocalDate sobrietyDate;
+    // Goals gamification (patients only)
+    private Integer totalXp;
+    private Integer level;
+    private String levelTitle;
     // Patient information for family members
     private Long patientId;
     private String patientNom;

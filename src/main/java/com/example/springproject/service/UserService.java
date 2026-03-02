@@ -247,7 +247,7 @@ public class UserService {
         response.setProfileImageUrl(user.getProfileImageUrl());
         response.setCreatedAt(user.getCreatedAt());
         
-        // If user is a patient, include referral code
+        // If user is a patient, include referral code and gamification
         if (user.getRole() == UserRole.PATIENT) {
             Patient patient = patientRepository.findById(userId)
                     .orElse(null);
@@ -256,6 +256,15 @@ public class UserService {
                 response.setHasCompletedOnboarding(patient.isHasCompletedOnboarding());
                 response.setAddiction(patient.getAddiction() != null ? patient.getAddiction().name() : null);
                 response.setSobrietyDate(patient.getSobrietyDate());
+                response.setTotalXp(patient.getTotalXp());
+                int[] thresholds = {0, 50, 150, 300, 500, 800, 1200, 1800, 2500, 3500};
+                String[] titles = {"Beginner", "Fighter", "Warrior", "Challenger", "Resilient", "Strong", "Champion", "Legend", "Freedom Hero", "Freedom Master"};
+                int level = 0;
+                for (int i = 0; i < thresholds.length; i++) {
+                    if (patient.getTotalXp() >= thresholds[i]) level = i;
+                }
+                response.setLevel(level + 1);
+                response.setLevelTitle(titles[level]);
             }
         }
         

@@ -58,6 +58,15 @@ public class Patient extends User {
     @Column(name = "has_completed_onboarding")
     private boolean hasCompletedOnboarding = false;
 
+    // Goals gamification (addiction reduction)
+    @Column(name = "total_xp", nullable = false)
+    private int totalXp = 0;
+
+    @ElementCollection
+    @CollectionTable(name = "patient_unlocked_badges", joinColumns = @JoinColumn(name = "patient_id"))
+    @Column(name = "badge_key")
+    private java.util.Set<String> unlockedBadges = new java.util.HashSet<>();
+
     public Patient(User user, LocalDate dateNaissance, LocalDate sobrietyDate, AddictionType addiction, String referralKey) {
         super(user.getId(), user.getEmail(), user.getPassword(), user.getNom(), 
               user.getPrenom(), user.getAge(), user.getRole(), user.getProfileImageUrl(), 
