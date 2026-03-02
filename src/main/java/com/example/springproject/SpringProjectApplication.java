@@ -11,10 +11,19 @@ public class SpringProjectApplication {
         // Load .env file before Spring Boot starts
         try {
             // Try to load .env file from current directory or parent directory
+            // Use directory("./") and directory("../") to cover common launch scenarios (IDE root vs module root)
             Dotenv dotenv = Dotenv.configure()
                     .directory("./")
+                    .ignoreIfMissing() 
+                    .load();
+            
+            if (dotenv.entries().isEmpty()) {
+                 // Try parent directory if current is empty
+                 dotenv = Dotenv.configure()
+                    .directory("../")
                     .ignoreIfMissing()
                     .load();
+            }
             
             // Set system properties from .env file so Spring Boot can read them
             if (dotenv.get("MAIL_HOST") != null) {
@@ -40,6 +49,12 @@ public class SpringProjectApplication {
             }
             if (dotenv.get("MAILER_DSN") != null) {
                 System.setProperty("MAILER_DSN", dotenv.get("MAILER_DSN"));
+            }
+            if (dotenv.get("DB_USERNAME") != null) {
+                System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
+            }
+            if (dotenv.get("DB_PASSWORD") != null) {
+                System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
             }
         } catch (Exception e) {
             System.err.println("Warning: Could not load .env file: " + e.getMessage());
