@@ -1,5 +1,6 @@
 package com.example.springproject.controller;
 
+import com.example.springproject.dto.AssessmentRequest;
 import com.example.springproject.dto.OnboardingCompletionRequest;
 import com.example.springproject.model.Patient;
 import com.example.springproject.service.OnboardingService;
@@ -28,5 +29,14 @@ public class OnboardingController {
         
         Patient updatedPatient = onboardingService.completeOnboarding(email, request);
         return ResponseEntity.ok(updatedPatient);
+    }
+
+    @PostMapping("/assessment")
+    public ResponseEntity<?> submitAssessment(@RequestBody AssessmentRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        
+        onboardingService.submitAssessment(email, request);
+        return ResponseEntity.ok().build();
     }
 }

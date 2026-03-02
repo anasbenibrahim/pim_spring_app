@@ -50,6 +50,12 @@ public class SpringProjectApplication {
             if (dotenv.get("MAILER_DSN") != null) {
                 System.setProperty("MAILER_DSN", dotenv.get("MAILER_DSN"));
             }
+            if (dotenv.get("DB_USERNAME") != null) {
+                System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
+            }
+            if (dotenv.get("DB_PASSWORD") != null) {
+                System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+            }
         } catch (Exception e) {
             System.err.println("Warning: Could not load .env file: " + e.getMessage());
             System.err.println("Make sure .env file exists in the Spring directory or set environment variables manually.");

@@ -1,5 +1,6 @@
 package com.example.springproject.service;
 
+import com.example.springproject.dto.AssessmentRequest;
 import com.example.springproject.dto.OnboardingCompletionRequest;
 import com.example.springproject.model.Patient;
 import com.example.springproject.model.User;
@@ -78,5 +79,12 @@ public class OnboardingService {
         patient.setHasCompletedOnboarding(true);
 
         return patientRepository.save(patient);
+    }
+
+    @Transactional
+    public void submitAssessment(String email, AssessmentRequest request) {
+        log.info("Submitting assessment for user: {}", email);
+        log.info("Assessment data: {}", request);
+        // Assessment data received. Can be extended later with persistence.
     }
 }
